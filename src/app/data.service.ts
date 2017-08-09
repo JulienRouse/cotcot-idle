@@ -105,8 +105,8 @@ export class GameData {
 let data:GameData = new GameData(
   new Ressource({
     name: "Oeufs en chocolat",
-    amountTotal: 0,
-    amount: 10,
+    amountTotal: 50,
+    amount: 50,
     amountEachTick: 0,
   }),
    [

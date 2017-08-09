@@ -16,6 +16,11 @@ const appRoutes: Routes = [
     redirectTo: '/units-home',
     pathMatch: 'full'
   },
+  {
+    path: '**',
+    redirectTo: '/units-home',
+    pathMatch: 'full'
+  }
 ]
 
 @NgModule({
