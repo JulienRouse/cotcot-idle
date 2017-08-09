@@ -16,7 +16,7 @@ webpackEmptyContext.id = "../../../../../src async recursive";
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "\n<div>\n  <h1>welcome to {{title}}</h1>\n  <p>{{data.ressource.name}} {{data.ressource.amount}} : {{data.ressource.amountEachTick}} / s </p>\n</div>\n<div>\n  <router-outlet></router-outlet>\n</div>"
+module.exports = "\n<div>\n  <h1>welcome to {{title}}</h1>\n  <p>{{data.ressource.name  }} {{data.ressource.amount }} : {{data.ressource.amountEachTick}} / s </p>\n</div>\n<div>\n  <router-outlet></router-outlet>\n</div>"
 
 /***/ }),
 
@@ -66,11 +66,10 @@ var AppComponent = (function () {
         // console.log(this.data);
     }
     AppComponent.prototype.ngOnInit = function () {
-        var _this = this;
         this.service.data$.subscribe(function (v) {
             // console.log("app home");
             // console.log(v);
-            _this.data = v;
+            //this.data = v;
         });
         //launch clock
         console.log("Start the game clock");
@@ -230,6 +229,19 @@ var Unit = (function () {
         this.amountBought += n;
         this.amountTotal += n;
     };
+    Unit.prototype.cost1Buy = function (cost, multiplier, amount) {
+        return Math.ceil(cost * (1 + Math.log2(Math.pow((amount + 2) / 2, multiplier))));
+    };
+    Unit.prototype.costNBuy = function (n) {
+        if (n < 0) {
+            throw new Error("not a valid number");
+        }
+        var res = 0;
+        for (var i = 0; i < n; i++) {
+            res += this.cost1Buy(this.baseCost, this.costMultiplier, this.amount + i);
+        }
+        return res;
+    };
     return Unit;
 }());
 
@@ -243,8 +255,8 @@ var GameData = (function () {
 
 var data = new GameData(new Ressource({
     name: "Oeufs en chocolat",
-    amountTotal: 0,
-    amount: 10,
+    amountTotal: 50,
+    amount: 50,
     amountEachTick: 0,
 }), [
     new Unit({
@@ -441,7 +453,7 @@ var _a;
 /***/ "../../../../../src/app/unit/unit.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "\n<h3>UNITS: {{dataUnit.name}}</h3>\n<p>j'ai {{dataUnit.amount}} {{dataUnit.name}}</p>\n<p>production par seconde {{dataUnit.amount*dataUnit.productionBase*dataUnit.productionMultiplier}}</p>\n<button (click)=\"buy(1)\">Buy 1</button>"
+module.exports = "\n<h3>UNITS: {{dataUnit.name}}</h3>\n<p>J'ai {{dataUnit.amount}} {{dataUnit.name}}</p>\n<p>Production: {{dataUnit.produce()}} {{itemProduced()}} par seconde</p>\n<button (click)=\"buy(1)\" [disabled]=\"!canBuy(1)\">Buy 1 : cost {{dataUnit.costNBuy(1)}}</button>\n<button (click)=\"buy(10)\" [disabled]=\"!canBuy(10)\">Buy 10 : cost {{dataUnit.costNBuy(10)}}</button>\n<button (click)=\"buy(100)\" *ngIf=\"canBuy(100)\">Buy 100: cost {{dataUnit.costNBuy(100)}}</button>"
 
 /***/ }),
 
@@ -491,12 +503,29 @@ var UnitComponent = (function () {
         //console.log("jemet");
         this.buyUnit.emit({ n: n, rank: this.dataUnit.rank });
     };
+    /**
+    * Check is there is enough ressources to buy n of this unit
+    */
+    UnitComponent.prototype.canBuy = function (n) {
+        //console.log(this.dataRessource.amount);
+        return this.dataRessource.amount >= this.dataUnit.costNBuy(n);
+    };
+    /**
+    *
+    */
+    UnitComponent.prototype.itemProduced = function () {
+        return (this.dataUnit.rank == 0) ? this.dataRessource.name : "UNIT";
+    };
     return UnitComponent;
 }());
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Input */])(),
     __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__data_service__["b" /* Unit */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__data_service__["b" /* Unit */]) === "function" && _a || Object)
 ], UnitComponent.prototype, "dataUnit", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Input */])(),
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__data_service__["c" /* Ressource */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__data_service__["c" /* Ressource */]) === "function" && _b || Object)
+], UnitComponent.prototype, "dataRessource", void 0);
 __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["v" /* Output */])(),
     __metadata("design:type", Object)
@@ -510,7 +539,7 @@ UnitComponent = __decorate([
     __metadata("design:paramtypes", [])
 ], UnitComponent);
 
-var _a;
+var _a, _b;
 //# sourceMappingURL=unit.component.js.map
 
 /***/ }),
@@ -518,7 +547,7 @@ var _a;
 /***/ "../../../../../src/app/units-home/units-home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "\n<h1>UNITS</h1>\n<ul class=\"units-home--list nav nav-pills nav-stacked\">\n  <li class=\"units-home--item\" role=\"presentation\">\n    <button (click)=\"showTab('ressource')\">{{data.ressource.name}} ({{data.ressource.amount}}, +{{data.ressource.amountEachTick}}/s)</button>\n  </li>\n  <li class=\"units-home--item\" *ngFor=\"let unit of dataUnit\" role=\"presentation\">\n    <button (click)=\"showTab(unit.rank);\" *ngIf=\"unit.rank&lt;2 || pow(100,unit.rank)&lt;data.ressource.amount\"> {{unit.name}} ({{unit.amount}}, +{{unit.amountEachTick}}/s)</button>\n  </li>\n</ul>\n<div class=\"content\" *ngIf=\"show == 'ressource'\">\n  <app-ressource [dataRessource]=\"data.ressource\"></app-ressource>\n</div>\n<div class=\"content\" *ngFor=\"let unit of dataUnit\">\n  <app-unit *ngIf=\"show == unit.rank\" [dataUnit]=\"unit\" (buyUnit)=\"buyUnit($event)\"></app-unit>\n</div>"
+module.exports = "\n<h1>UNITS</h1>\n<ul class=\"units-home--list nav nav-pills nav-stacked\">\n  <li class=\"units-home--item\" role=\"presentation\">\n    <button (click)=\"showTab('ressource')\">{{data.ressource.name}} ({{data.ressource.amount}}, +{{data.ressource.amountEachTick}}/s)</button>\n  </li>\n  <li class=\"units-home--item\" *ngFor=\"let unit of dataUnit\" role=\"presentation\">\n    <button (click)=\"showTab(unit.rank);\" *ngIf=\"unit.rank&lt;2 || pow(100,unit.rank)&lt;data.ressource.amount\"> {{unit.name}} ({{unit.amount}}, +{{unit.amountEachTick}}/s)</button>\n  </li>\n</ul>\n<div class=\"content\" *ngIf=\"show == 'ressource'\">\n  <app-ressource [dataRessource]=\"data.ressource\"></app-ressource>\n</div>\n<div class=\"content\" *ngFor=\"let unit of dataUnit\">\n  <app-unit *ngIf=\"show == unit.rank\" [dataUnit]=\"unit\" [dataRessource]=\"data.ressource\" (buyUnit)=\"buyUnit($event)\"></app-unit>\n</div>"
 
 /***/ }),
 
@@ -581,8 +610,13 @@ var UnitsHomeComponent = (function () {
     };
     UnitsHomeComponent.prototype.buyUnit = function (e) {
         // console.log(e);
-        this.data.units[e.rank].amount += e.n;
-        this.service.setData(this.data);
+        if (this.data.ressource.spend(this.data.units[e.rank].costNBuy(e.n))) {
+            this.data.units[e.rank].amount += e.n;
+            this.service.setData(this.data);
+        }
+        else {
+            console.log("ERROR BUY");
+        }
     };
     UnitsHomeComponent.prototype.showTab = function (s) {
         // console.log(s);
