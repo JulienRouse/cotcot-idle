@@ -13,3 +13,12 @@ Run `ng generate component component-name` to generate a new component. You can 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+
+
+# Deploy on github
+
+-Push the project to github:
+  `git remote add origin https://github.com/USERNAME/PROJECT_NAME.git`
+  `git push origin master`
+-install angular-cli-ghpages: `npm i -g angular-cli-ghpages`
+-insert in package json ->script-> `"deploy": "ng build -sm -ec -bh /cotcot-idle/ & ngh"`
