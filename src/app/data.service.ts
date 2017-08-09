@@ -77,7 +77,7 @@ export class Unit {
   }
 
   cost1Buy(cost, multiplier, amount):number{
-    return Math.ceil(cost * Math.pow( amount+1,multiplier))
+    return Math.ceil(cost * (1+Math.log2(Math.pow( (amount+2)/2,multiplier))))
   }
 
   costNBuy(n:number){
