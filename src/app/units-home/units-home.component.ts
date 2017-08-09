@@ -39,8 +39,13 @@ export class UnitsHomeComponent implements OnInit {
 
   buyUnit(e:any):void{
     // console.log(e);
-    this.data.units[e.rank].amount += e.n;
-    this.service.setData(this.data);
+    if(this.data.ressource.spend(this.data.units[e.rank].costNBuy(e.n)))
+    {
+      this.data.units[e.rank].amount += e.n;
+      this.service.setData(this.data);
+    }else{
+      console.log("ERROR BUY")
+    }
   }
 
   showTab(s:string):void{

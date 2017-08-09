@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
-import { Unit } from '../data.service';
+import { Unit, Ressource } from '../data.service';
 
 
 @Component({
@@ -10,6 +10,7 @@ import { Unit } from '../data.service';
 })
 export class UnitComponent implements OnInit {
   @Input()dataUnit:Unit;
+  @Input()dataRessource:Ressource;
   @Output()buyUnit = new EventEmitter<any>();
   constructor() { }
 
@@ -21,5 +22,9 @@ export class UnitComponent implements OnInit {
     this.buyUnit.emit({n:n, rank:this.dataUnit.rank});
   }
 
+  canBuy(n:number):boolean{
+    console.log(this.dataRessource.amount);
+    return this.dataRessource.amount>=this.dataUnit.costNBuy(n);
+  }
 
 }
