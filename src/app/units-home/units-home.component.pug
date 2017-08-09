@@ -1,0 +1,15 @@
+h1 UNITS
+ul.units-home--list.nav.nav-pills.nav-stacked
+  li.units-home--item(role="presentation")
+    button('(click)'="showTab('ressource')") {{data.ressource.name}} ({{data.ressource.amount}}, +{{data.ressource.amountEachTick}}/s)
+  li.units-home--item("*ngFor"="let unit of dataUnit" role="presentation")
+    button('(click)'="showTab(unit.rank);" "*ngIf"="unit.rank<2 || pow(100,unit.rank)<data.ressource.amount")  {{unit.name}} ({{unit.amount}}, +{{unit.amountEachTick}}/s)
+
+div.content('*ngIf'="show == 'ressource'")
+  app-ressource("[dataRessource]"="data.ressource")
+
+div.content("*ngFor"="let unit of dataUnit" )
+  app-unit(
+    '*ngIf'="show == unit.rank"
+    "[dataUnit]"="unit"
+    "(buyUnit)"="buyUnit($event)")
