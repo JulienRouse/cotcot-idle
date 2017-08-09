@@ -18,7 +18,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 # Deploy on github
 
 - Push the project to github:
-  `git remote add origin https://github.com/USERNAME/PROJECT_NAME.git`
-  `git push origin master`
+  * `git remote add origin https://github.com/USERNAME/PROJECT_NAME.git`
+  * `git push origin master`
 - Install angular-cli-ghpages: `npm i -g angular-cli-ghpages`
 - Insert in package.json ->script-> `"deploy": "ng build -sm -ec -bh /cotcot-idle/ & ngh"`
