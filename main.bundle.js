@@ -125,6 +125,11 @@ var appRoutes = [
         redirectTo: '/units-home',
         pathMatch: 'full'
     },
+    {
+        path: '**',
+        redirectTo: '/units-home',
+        pathMatch: 'full'
+    }
 ];
 var AppModule = (function () {
     function AppModule() {
