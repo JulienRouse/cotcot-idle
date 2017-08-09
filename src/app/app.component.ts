@@ -2,11 +2,6 @@ import { Component, OnInit} from '@angular/core';
 
 import { DataService, Unit, Ressource, GameData } from './data.service'
 
-
-
-
-
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -27,7 +22,7 @@ export class AppComponent {
     this.service.data$.subscribe((v:GameData) =>{
       // console.log("app home");
       // console.log(v);
-      this.data = v;
+      //this.data = v;
     })
 
     //launch clock

@@ -75,6 +75,21 @@ export class Unit {
     this.amountBought += n;
     this.amountTotal += n;
   }
+
+  cost1Buy(cost, multiplier, amount):number{
+    return Math.ceil(cost * Math.pow(multiplier, amount))
+  }
+
+  costNBuy(n:number){
+    if(n<0){
+      throw new Error("not a valid number");
+    }
+    let res:number=0;
+    for(let i:number=0;i<n;i++){
+      res += this.cost1Buy(this.baseCost, this.costMultiplier, this.amount+i);
+    }
+    return res;
+  }
 }
 
 export class GameData {
