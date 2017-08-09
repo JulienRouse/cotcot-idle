@@ -23,8 +23,9 @@ export class UnitComponent implements OnInit {
   }
 
   canBuy(n:number):boolean{
-    console.log(this.dataRessource.amount);
+    //console.log(this.dataRessource.amount);
     return this.dataRessource.amount>=this.dataUnit.costNBuy(n);
   }
 
+  
 }

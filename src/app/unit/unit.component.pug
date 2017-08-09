@@ -1,6 +1,7 @@
 h3 UNITS: {{dataUnit.name}}
 p j'ai {{dataUnit.amount}} {{dataUnit.name}}
-p production par seconde {{dataUnit.amount * dataUnit.productionBase * dataUnit.productionMultiplier}}
+p production par seconde {{dataUnit.produce()}}
 
 button("(click)"="buy(1)" "[disabled]"="!canBuy(1)") Buy 1 : cost {{dataUnit.costNBuy(1)}}
 button("(click)"="buy(10)" "[disabled]"="!canBuy(10)") Buy 10 : cost {{dataUnit.costNBuy(10)}}
+button("(click)"="buy(100)" "[disabled]"="!canBuy(100)") Buy 100: cost {{dataUnit.costNBuy(100)}}
