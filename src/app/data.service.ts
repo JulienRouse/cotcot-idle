@@ -1,5 +1,34 @@
 import { Injectable } from '@angular/core';
+
+import { Apollo } from 'apollo-angular'
+
+import { Subscription } from 'rxjs/Subscription'
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/toPromise'
+
+import gql from 'graphql-tag'
+
+
+
+const ressourceQuery = gql`
+  query {
+    allRessources {
+      name
+      amount
+    }
+  }
+`
+
+function createMutationUpdateRessourceAmountQuery(n:number){
+  return gql`
+  mutation {
+    updateRessource(id:"cj665f0x11o8s01597tts24kd", amount:${n}) {
+      name
+      amount
+    }
+  }
+  `
+}
 
 export class Ressource {
   name:string;
@@ -14,7 +43,6 @@ export class Ressource {
       this.amountEachTick=obj.amountEachTick;
     }
 
-  //
   produce():number{
     return this.amountEachTick;
   }
@@ -124,7 +152,7 @@ let data:GameData = new GameData(
     }),
     new Unit({
       rank: 1,
-      name: "Oeufs Doré",
+      name: "Oeufs en or",
       productionBase: 1,
       productionMultiplier: 1,
       amount: 0,
@@ -136,7 +164,7 @@ let data:GameData = new GameData(
     }),
     new Unit({
       rank: 2,
-      name: "Poules Doré",
+      name: "Poules en or",
       productionBase: 1,
       productionMultiplier: 1,
       amount: 0,
@@ -158,12 +186,27 @@ let data:GameData = new GameData(
       baseCost: 100000000,
       costMultiplier: 1.4,
     }),
+    new Unit({
+      rank: 4,
+      name: "Poules Arc-En-Ciel",
+      productionBase: 2,
+      productionMultiplier: 1,
+      amount: 0,
+      amountBought: 0,
+      amountEachTick: 0,
+      amountTotal: 0,
+      baseCost: 100000000000,
+      costMultiplier: 1.5,
+    })
   ]
 );
 
 @Injectable()
 export class DataService {
 
+  loading = true;
+  queryRessource: any;
+  queryRessourceSub:Subscription;
   //observable string source
   //https://angular.io/guide/component-interaction#parent-and-children-communicate-via-a-service
   private dataSubject = new Subject<Object>()
@@ -171,8 +214,19 @@ export class DataService {
   //observable string streams
   data$ = this.dataSubject.asObservable();
 
-  constructor() {
+  constructor(private apollo:Apollo) {
+    console.log("constructor")
     console.log(data);
+
+    //a mettre dans le ngOnInit
+    this.queryRessourceSub = apollo.watchQuery({
+      query : ressourceQuery
+    }).subscribe(({data, loading}:any)=>{
+      console.log(data.allRessources[0]);
+
+      this.loading = loading;
+      this.queryRessource = data;
+    });
   }
 
   setData(gameData:GameData):void{
@@ -206,6 +260,7 @@ export class DataService {
   }
 
   gameClock(interval:number=1000){
+    let compteur = 0;
     setInterval(()=>{
       //generateRessource
       let gameData;
@@ -217,6 +272,14 @@ export class DataService {
       gameData = new GameData(newRessource, newUnit)
       this.setData(gameData);
 
+      //save on serveur every x ticks
+      compteur++;
+      if(compteur%60==0){
+        console.log("SAVE ON SERVEUR")
+        this.apollo.mutate({
+          mutation: createMutationUpdateRessourceAmountQuery(gameData.ressource.amount)
+        })
+      }
     }, interval)
   }
 
