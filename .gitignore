@@ -3,6 +3,8 @@
 #pug
 /src/**/*.html
 
+#en attendant mieux, je ne met pas client.ts sur git a cause du token de mon application
+/src/app/client.ts
 
 # compiled output
 /dist
