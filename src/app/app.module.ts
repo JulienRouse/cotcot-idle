@@ -11,6 +11,8 @@ import { UnitComponent } from './unit/unit.component';
 import { RessourceComponent } from './ressource/ressource.component';
 //data
 import { DataService } from './data.service'
+//service
+import { AuthService } from './auth.service'
 //client for apollo
 import { provideClient } from './client'
 
@@ -44,7 +46,7 @@ const appRoutes: Routes = [
     ),
   ApolloModule.forRoot(provideClient),
   ],
-  providers: [DataService],
+  providers: [DataService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

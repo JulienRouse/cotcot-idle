@@ -1,7 +1,17 @@
-div
-  h1 welcome to {{title}}
-  p {{data.ressource.name  }} {{data.ressource.amount }} : {{data.ressource.amountEachTick}} / s 
-  
-  
-div
+
+nav.navbar.navbar-default
+  div.container-fluid
+    div.navbar-header
+      a.navbar-brand(href="#") {{auth.userProfile ? auth.userProfile?.nickname : "default account" }}
+       
+
+      //- button.btn.btn-primary.btn-margin(routerLink="/") Home
+      
+      button.btn.btn-primary.btn-margin("*ngIf"="!auth.isAuthenticated()" "(click)"="auth.login()") Log In
+
+      button.btn.btn-primary.btn-margin("*ngIf"="auth.isAuthenticated()" "(click)"="auth.logout()") Log Out
+      
+
+
+main.container
   router-outlet

@@ -18,7 +18,6 @@ const ressourceQuery = gql`
     }
   }
 `
-
 function createMutationUpdateRessourceAmountQuery(n:number){
   return gql`
   mutation {
@@ -203,6 +202,7 @@ let data:GameData = new GameData(
 
 @Injectable()
 export class DataService {
+
 
   loading = true;
   queryRessource: any;
