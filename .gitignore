@@ -5,6 +5,8 @@
 
 #en attendant mieux, je ne met pas client.ts sur git a cause du token de mon application
 /src/app/client.ts
+#pareil pour auth.service
+/src/app/auth.service.ts
 
 # compiled output
 /dist
