@@ -2,7 +2,7 @@
 nav.navbar.navbar-default
   div.container-fluid
     div.navbar-header
-      a.navbar-brand(href="#") {{auth.userProfile ? auth.userProfile?.nickname : "default account" }}
+      a.navbar-brand(href="#") {{auth.isAuthenticated() ? auth.userProfile?.nickname : "default account" }}
        
 
       //- button.btn.btn-primary.btn-margin(routerLink="/") Home

@@ -8,6 +8,74 @@ import 'rxjs/add/operator/toPromise'
 
 import gql from 'graphql-tag'
 
+function createMutationCreateUserData(idToken ){
+  console.log("QUERY")
+  console.log(idToken)
+  return gql`
+  mutation {
+    createUser(
+      authProvider: {
+        auth0: {
+          idToken: "${idToken}"
+        }}
+      gameData: {
+        ressource: {amount:60, amountTotal:0, amountEachTick:0, name:"Oeufs en chocolat"},
+        units: [
+          {
+          amount:0,
+         	amountTotal:0,
+          amountBought:0,
+          amountEachTick:0,
+          name:"Poules en chocolat",
+          rank:0,
+          productionBase:1,
+          productionMultiplier:1,
+          costMultiplier:1.2,
+          baseCost:10},
+           {
+          amount:0,
+         	amountTotal:0,
+          amountBought:0,
+          amountEachTick:0,
+          name:"Oeufs en or",
+          rank:1,
+          productionBase:1,
+          productionMultiplier:1,
+          costMultiplier:1.2,
+          baseCost:1000},
+           {
+          amount:0,
+         	amountTotal:0,
+          amountBought:0,
+          amountEachTick:0,
+          name:"Poules en or",
+          rank:2,
+          productionBase:2,
+          productionMultiplier:1,
+          costMultiplier:1.3,
+          baseCost:100000},
+           {
+          amount:0,
+         	amountTotal:0,
+          amountBought:0,
+          amountEachTick:0,
+          name:"Oeufs arc-en-ciel",
+          rank:3,
+          productionBase:2,
+          productionMultiplier:1,
+          costMultiplier:1.3,
+          baseCost:100000},
+        ]}
+      )
+      {
+        id
+      	gameData{
+          id
+        }
+		}
+  }`
+}
+
 
 
 const ressourceQuery = gql`
@@ -251,15 +319,18 @@ export class DataService {
   }
 
   //calculations/game
-  gameStart(){
-    this.gameInit();
-    this.gameClock();
+  gameStart(idToken){
+    this.gameInit(idToken);
+    this.gameClock(idToken);
   }
 
-  gameInit(){
+  gameInit(idToken){
+    this.apollo.mutate({
+      mutation: createMutationCreateUserData(idToken)
+    })
   }
 
-  gameClock(interval:number=1000){
+  gameClock(idToken, interval:number=1000){
     let compteur = 0;
     setInterval(()=>{
       //generateRessource
@@ -274,12 +345,22 @@ export class DataService {
 
       //save on serveur every x ticks
       compteur++;
-      if(compteur%60==0){
-        console.log("SAVE ON SERVEUR")
-        this.apollo.mutate({
-          mutation: createMutationUpdateRessourceAmountQuery(gameData.ressource.amount)
-        })
+      if(compteur%10==0 ){
+        {
+          if(idToken){
+            console.log("SAVE ON SERVEUR")
+            this.apollo.mutate({
+              mutation: createMutationCreateUserData(idToken)
+              //mutation: createMutationUpdateRessourceAmountQuery(gameData.ressource.amount)
+            })
+          }
+          else{
+              console.log("PAS de SAVE")
+          }
+        }
       }
+
+
     }, interval)
   }
 
