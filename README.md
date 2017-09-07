@@ -22,3 +22,8 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
   * `git push origin master`
 - Install angular-cli-ghpages: `npm i -g angular-cli-ghpages`
 - Insert in package.json ->script-> `"deploy": "ng build -sm -ec -bh /cotcot-idle/ & ngh"`
+- Add a Route in app.module.ts like `{
+  path: '**',
+  redirectTo: '/index',
+  pathMatch: 'full'
+}` and replace '/index' to your route pointing to your welcome page
